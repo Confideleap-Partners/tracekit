@@ -65,6 +65,7 @@
     "format:check": "prettier --check \"src/**/*.ts\" \"bench/**/*.mjs\" \"examples/**/*.js\"",
     "demo": "node examples/local-e2e.js",
     "sample": "node examples/sample-response.cjs",
+    "stages": "node examples/failure-stages.cjs",
     "clean": "rm -rf dist"
   },
   "exports": {
