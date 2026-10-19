@@ -16,7 +16,14 @@ export {
   type TraceKitConfig,
 } from './ids';
 export { initTraceKit, type InitTraceKitOptions } from './bootstrap';
-export { core, isNativeAvailable, jsFallback, type NativeApi } from './native';
+export {
+  core,
+  getNativeStatus,
+  isNativeAvailable,
+  jsFallback,
+  type NativeApi,
+  type NativeStatus,
+} from './native';
 export {
   contextToLogFields,
   createContextFromHeaders,
@@ -54,5 +61,17 @@ export {
   runWithOrCreateJobContext,
   type TracedJobData,
 } from './bullmq';
-export { errorHandler, outgoingHeaders, requestContext, type ExpressRequest, type ExpressResponse, type RequestContextOptions } from './express';
-export { hasOpenTelemetry, getActiveSpanContext, getActiveTraceparent, withSpan } from './otel-bridge';
+export {
+  errorHandler,
+  outgoingHeaders,
+  requestContext,
+  type ExpressRequest,
+  type ExpressResponse,
+  type RequestContextOptions,
+} from './express';
+export {
+  hasOpenTelemetry,
+  getActiveSpanContext,
+  getActiveTraceparent,
+  withSpan,
+} from './otel-bridge';
