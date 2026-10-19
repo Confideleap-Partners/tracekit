@@ -1,0 +1,15 @@
+[package]
+name = "tracekit-core"
+description = "Deterministic request IDs, W3C trace context, baggage, and redaction for TraceKit"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "tracekit_core"
+path = "src/lib.rs"
+
+[dependencies]
+getrandom = "0.2"
+serde_json = "1"
