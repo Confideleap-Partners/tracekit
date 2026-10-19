@@ -1,9 +1,15 @@
 /**
- * Native binding loader with a pure TypeScript fallback.
+ * Native binding loader with a TypeScript fallback.
  *
- * The native addon lives at `native/tracekit.node`. When it cannot be loaded
- * (unsupported platform, missing prebuild, Next.js standalone misconfiguration)
- * TraceKit silently falls back to the TypeScript implementation.
+ * The Rust native addon is the primary implementation. Resolution order:
+ *
+ * 1. `native/tracekit.node` — local build (`npm run build:native`)
+ * 2. `tracekit.<platform-tag>.node` — napi-rs CLI output
+ * 3. `@confideleap/tracekit-<platform-tag>` — published platform package
+ *
+ * The TypeScript fallback exists for unsupported platforms and emergency
+ * rollback. It is never silent: a warning is emitted once, and
+ * `TRACEKIT_REQUIRE_NATIVE=true` makes a missing native binding fatal.
  */
 
 import { createRequire } from 'node:module';
@@ -62,28 +68,118 @@ const jsFallback: NativeApi = {
   redactJson: (json, extraKeys = []) => js.redactJson(json, extraKeys),
 };
 
+export interface NativeStatus {
+  available: boolean;
+  loadedFrom: string | null;
+  fallbackReason: string | null;
+  platform: string;
+  arch: string;
+  libc: 'musl' | 'glibc' | 'unknown';
+}
+
 let nativeBinding: NativeApi | null = null;
 let nativeChecked = false;
+let nativePath: string | null = null;
+let nativeError: string | null = null;
+let fallbackWarned = false;
+let loggedFallback = false;
+
+function isMusl(): boolean {
+  try {
+    // Node 24 exposes glibc in the diagnostic report; absence means musl.
+    const report = process.report?.getReport() as
+      { header?: { glibcVersionRuntime?: string } } | undefined;
+    return !report?.header?.glibcVersionRuntime;
+  } catch {
+    return false;
+  }
+}
+
+function libc(): 'musl' | 'glibc' | 'unknown' {
+  if (process.platform !== 'linux') return 'unknown';
+  return isMusl() ? 'musl' : 'glibc';
+}
+
+function platformTag(): string | null {
+  const { platform, arch } = process;
+  if (platform === 'linux') return `linux-${arch}-${libc() === 'musl' ? 'musl' : 'gnu'}`;
+  if (platform === 'darwin') return `darwin-${arch}`;
+  if (platform === 'win32') return `win32-${arch}-msvc`;
+  return null;
+}
+
+function nativeCandidates(): string[] {
+  const candidates = ['../native/tracekit.node'];
+  const tag = platformTag();
+  if (tag) {
+    candidates.push(`../tracekit.${tag}.node`);
+    candidates.push(`@confideleap/tracekit-${tag}`);
+  }
+  return candidates;
+}
+
+function requireNative(candidate: string): NativeApi {
+  const require = createRequire(__filename);
+  return require(candidate) as NativeApi;
+}
 
 function loadNative(): NativeApi | null {
   if (nativeChecked) return nativeBinding;
   nativeChecked = true;
-  try {
-    const require = createRequire(__filename);
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    nativeBinding = require('../native/tracekit.node') as NativeApi;
-  } catch {
-    nativeBinding = null;
+
+  for (const candidate of nativeCandidates()) {
+    try {
+      nativeBinding = requireNative(candidate);
+      nativePath = candidate;
+      nativeError = null;
+      return nativeBinding;
+    } catch (err) {
+      nativeError = err instanceof Error ? err.message : String(err);
+    }
   }
-  return nativeBinding;
+
+  if (process.env.TRACEKIT_REQUIRE_NATIVE === 'true') {
+    throw new Error(
+      `TraceKit: native binding is required but could not be loaded (${nativeError ?? 'unknown error'})`,
+    );
+  }
+  return null;
 }
 
+function warnFallbackOnce(): void {
+  if (fallbackWarned || process.env.NODE_ENV === 'test') return;
+  fallbackWarned = true;
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[tracekit] native binding unavailable (${nativeError ?? 'unknown error'}); using TypeScript fallback. Set TRACEKIT_REQUIRE_NATIVE=true to fail fast.`,
+  );
+}
+
+/** Primary core accessor. Returns the native binding when available. */
 export function core(): NativeApi {
-  return loadNative() ?? jsFallback;
+  const native = loadNative();
+  if (native) return native;
+  if (!loggedFallback) {
+    loggedFallback = true;
+    warnFallbackOnce();
+  }
+  return jsFallback;
 }
 
 export function isNativeAvailable(): boolean {
   return loadNative() !== null;
+}
+
+export function getNativeStatus(): NativeStatus {
+  loadNative();
+  return {
+    available: nativeBinding !== null,
+    loadedFrom: nativePath,
+    fallbackReason: nativeBinding === null ? nativeError : null,
+    platform: process.platform,
+    arch: process.arch,
+    libc: libc(),
+  };
 }
 
 export { jsFallback };
