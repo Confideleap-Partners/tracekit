@@ -91,7 +91,8 @@ function currentRoute(): string {
 
 function routeFromInput(input: RequestInfo | URL): string {
   try {
-    const raw = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+    const raw =
+      typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
     return new URL(raw, 'http://localhost').pathname;
   } catch {
     return currentRoute();
@@ -147,7 +148,12 @@ function makeWebFetch(original: typeof fetch): typeof fetch {
 /** Initialize browser tracking. Safe to call more than once. */
 export function initWebTracking(next: WebTrackingOptions): void {
   options = next;
-  if (next.install !== false && !next.fetchImpl && typeof globalThis.fetch === 'function' && !installedOnGlobal) {
+  if (
+    next.install !== false &&
+    !next.fetchImpl &&
+    typeof globalThis.fetch === 'function' &&
+    !installedOnGlobal
+  ) {
     globalThis.fetch = getWebFetch();
     installedOnGlobal = true;
   }

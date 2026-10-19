@@ -13,7 +13,11 @@ const tracekit = require('../dist/index.js');
 const { requestContext, errorHandler } = require('../dist/express.js');
 const { httpLogger } = require('../dist/logger.js');
 const { tracedFetch, getResponseFailure } = require('../dist/fetch.js');
-const { captureJobContext, runWithJobContext, runWithOrCreateJobContext } = require('../dist/bullmq.js');
+const {
+  captureJobContext,
+  runWithJobContext,
+  runWithOrCreateJobContext,
+} = require('../dist/bullmq.js');
 const { markFailure } = require('../dist/failure.js');
 const { core } = require('../dist/native.js');
 
@@ -21,7 +25,10 @@ function listen(app) {
   return new Promise((resolve) => {
     const server = app.listen(0, '127.0.0.1', () => {
       const { port } = server.address();
-      resolve({ url: `http://127.0.0.1:${port}`, close: () => new Promise((done) => server.close(done)) });
+      resolve({
+        url: `http://127.0.0.1:${port}`,
+        close: () => new Promise((done) => server.close(done)),
+      });
     });
   });
 }
@@ -61,7 +68,11 @@ async function main() {
   irm.use(httpLogger({ logger: tracekit.createLogger({ service: 'irm-backend' }) }));
   irm.get('/work', async (req, res, next) => {
     try {
-      const response = await tracedFetch(`${centralServer.url}/ok`, {}, { serviceName: 'central-backend' });
+      const response = await tracedFetch(
+        `${centralServer.url}/ok`,
+        {},
+        { serviceName: 'central-backend' },
+      );
       const body = await response.json();
       const job = captureJobContext({ kind: 'reconcile' });
       await runWithJobContext(job, async () => {
@@ -81,7 +92,11 @@ async function main() {
   });
   irm.get('/downstream-fail', async (_req, _res, next) => {
     try {
-      const response = await tracedFetch(`${centralServer.url}/fail`, {}, { serviceName: 'central-backend' });
+      const response = await tracedFetch(
+        `${centralServer.url}/fail`,
+        {},
+        { serviceName: 'central-backend' },
+      );
       const failure = getResponseFailure(response);
       const err = new Error('downstream failed');
       if (failure) markFailure(err, failure);
@@ -90,7 +105,12 @@ async function main() {
       next(err);
     }
   });
-  irm.use(errorHandler({ service: 'irm-backend', logger: tracekit.createLogger({ service: 'irm-backend' }) }));
+  irm.use(
+    errorHandler({
+      service: 'irm-backend',
+      logger: tracekit.createLogger({ service: 'irm-backend' }),
+    }),
+  );
   const irmServer = await listen(irm);
 
   const workflowId = tracekit.generateWorkflowId();

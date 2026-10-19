@@ -26,7 +26,10 @@ function readHeader(headers: HeaderLike | undefined, name: string): string | und
 /** Normalize Web `Headers`, Node request headers, or a plain object. */
 export function toHeaderLike(input: HeaderLike | Headers | undefined): HeaderLike {
   if (!input) return {};
-  if (typeof (input as Headers).forEach === 'function' && typeof (input as Headers).get === 'function') {
+  if (
+    typeof (input as Headers).forEach === 'function' &&
+    typeof (input as Headers).get === 'function'
+  ) {
     const out: HeaderLike = {};
     (input as Headers).forEach((value, key) => {
       out[key] = value;
@@ -55,11 +58,13 @@ export function createContextFromHeaders(
     (generateMissing ? generateRequestId(options.idFormat) : '');
 
   const inboundActionId = readHeader(normalizedHeaders, 'x-action-id');
-  const actionId = inboundActionId ? binding.normalizeActionId(inboundActionId) ?? undefined : undefined;
+  const actionId = inboundActionId
+    ? (binding.normalizeActionId(inboundActionId) ?? undefined)
+    : undefined;
 
   const inboundWorkflowId = readHeader(normalizedHeaders, 'x-workflow-id');
   const workflowId = inboundWorkflowId
-    ? binding.normalizeWorkflowId(inboundWorkflowId) ?? undefined
+    ? (binding.normalizeWorkflowId(inboundWorkflowId) ?? undefined)
     : undefined;
 
   const inboundTraceparent = readHeader(normalizedHeaders, 'traceparent');

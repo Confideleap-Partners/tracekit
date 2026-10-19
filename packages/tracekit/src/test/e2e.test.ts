@@ -76,7 +76,12 @@ async function start(): Promise<void> {
       }),
     );
   });
-  b.use(errorHandler({ service: 'central-backend', logger: bLogs.logger }) as unknown as express.ErrorRequestHandler);
+  b.use(
+    errorHandler({
+      service: 'central-backend',
+      logger: bLogs.logger,
+    }) as unknown as express.ErrorRequestHandler,
+  );
   bServer = await listen(b);
 
   const a = express();
@@ -122,7 +127,12 @@ async function start(): Promise<void> {
       next(err);
     }
   });
-  a.use(errorHandler({ service: 'irm-backend', logger: aLogs.logger }) as unknown as express.ErrorRequestHandler);
+  a.use(
+    errorHandler({
+      service: 'irm-backend',
+      logger: aLogs.logger,
+    }) as unknown as express.ErrorRequestHandler,
+  );
   aServer = await listen(a);
 }
 

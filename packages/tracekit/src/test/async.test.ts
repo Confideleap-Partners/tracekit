@@ -2,7 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { core } from '../native';
 import { createContextFromHeaders, currentContext, runWithContext } from '../context';
-import { captureJobContext, createJobContext, runWithJobContext, runWithOrCreateJobContext } from '../bullmq';
+import {
+  captureJobContext,
+  createJobContext,
+  runWithJobContext,
+  runWithOrCreateJobContext,
+} from '../bullmq';
 
 test('job payloads carry request, action, job, and workflow context', async () => {
   const context = createContextFromHeaders({

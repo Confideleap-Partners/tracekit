@@ -18,9 +18,7 @@ test('apollo plugin attaches request/trace/failure IDs to errors without clobber
     errors: [{ extensions: { code: 'FORBIDDEN' } }, {}],
   };
 
-  await runWithContext(context, () =>
-    requestListener.willSendResponse({ response }),
-  );
+  await runWithContext(context, () => requestListener.willSendResponse({ response }));
 
   assert.equal(response.errors[0]?.extensions?.requestId, context.requestId);
   assert.equal(response.errors[0]?.extensions?.traceId, context.traceId);

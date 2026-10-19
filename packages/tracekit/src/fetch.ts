@@ -27,8 +27,16 @@ function resolveUrl(input: RequestInfo | URL): string {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function perform(input: RequestInfo | URL, init: RequestInit, span: any, options: TracedFetchOptions): Promise<Response> {
-  const headers = options.propagate === false ? init.headers : (injectTraceHeaders((init.headers as HeaderLike) ?? {}) as HeadersInit);
+async function perform(
+  input: RequestInfo | URL,
+  init: RequestInit,
+  span: any,
+  options: TracedFetchOptions,
+): Promise<Response> {
+  const headers =
+    options.propagate === false
+      ? init.headers
+      : (injectTraceHeaders((init.headers as HeaderLike) ?? {}) as HeadersInit);
   const method = init.method ?? 'GET';
   const url = resolveUrl(input);
   let host = '';

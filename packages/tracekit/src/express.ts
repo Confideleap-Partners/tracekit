@@ -3,11 +3,7 @@
  * structural types match Express' `Request`/`Response`.
  */
 
-import {
-  createContextFromHeaders,
-  injectTraceHeaders,
-  runWithContext,
-} from './context';
+import { createContextFromHeaders, injectTraceHeaders, runWithContext } from './context';
 import { classifyError, recordFailure, setFailureHeaders } from './failure';
 import type { Logger } from './logger';
 import { httpLogger } from './logger';

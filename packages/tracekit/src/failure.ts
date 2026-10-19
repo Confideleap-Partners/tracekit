@@ -92,7 +92,9 @@ function readHeader(headers: HeaderLike | undefined, name: string): string | und
 }
 
 /** Failure info supplied by a downstream service via response headers. */
-export function failureFromHeaders(headers: HeaderLike | Headers | undefined): FailureInfo | undefined {
+export function failureFromHeaders(
+  headers: HeaderLike | Headers | undefined,
+): FailureInfo | undefined {
   const normalized = toHeaderLike(headers);
   const stage = readHeader(normalized, 'x-failure-stage') as FailureStage | undefined;
   const service = readHeader(normalized, 'x-failure-service');

@@ -1,7 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { core, isNativeAvailable, jsFallback, type NativeApi } from '../native';
-import { createContextFromHeaders, injectTraceHeaders, runWithContext, currentContext } from '../context';
+import {
+  createContextFromHeaders,
+  injectTraceHeaders,
+  runWithContext,
+  currentContext,
+} from '../context';
 
 const implementations: Array<{ name: string; api: NativeApi }> = [
   { name: 'typescript', api: jsFallback },
@@ -63,11 +68,7 @@ test('core implementations agree on IDs, trace headers, baggage, and redaction',
     const traceparent = api.formatTraceparent(traceId, spanId, 1);
     assert.ok(traceparent, `${name}: formats traceparent`);
     const parsed = api.parseTraceparent(traceparent as string);
-    assert.deepEqual(
-      parsed,
-      { traceId, spanId, flags: 1 },
-      `${name}: traceparent round trip`,
-    );
+    assert.deepEqual(parsed, { traceId, spanId, flags: 1 }, `${name}: traceparent round trip`);
     assert.equal(
       api.parseTraceparent('00-00000000000000000000000000000000-0000000000000000-01'),
       null,
@@ -115,7 +116,11 @@ test('core implementations agree on IDs, trace headers, baggage, and redaction',
 
 test('request context preserves valid inbound IDs and regenerates invalid ones', () => {
   const inbound = core().newRequestId();
-  const inboundTrace = core().formatTraceparent(core().newTraceId(), core().newSpanId(), 1) as string;
+  const inboundTrace = core().formatTraceparent(
+    core().newTraceId(),
+    core().newSpanId(),
+    1,
+  ) as string;
   const actionId = core().newActionId();
   const workflowId = core().newWorkflowId();
 

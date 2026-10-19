@@ -117,7 +117,9 @@ export async function initTelemetry(options: TelemetryOptions): Promise<Telemetr
   if (options.spanProcessor) {
     config.spanProcessors = [options.spanProcessor];
   } else if (endpoint && BatchSpanProcessor) {
-    config.spanProcessors = [new BatchSpanProcessor(new OTLPTraceExporter({ url: otlpTraceUrl(endpoint) }))];
+    config.spanProcessors = [
+      new BatchSpanProcessor(new OTLPTraceExporter({ url: otlpTraceUrl(endpoint) })),
+    ];
   } else if (endpoint) {
     config.traceExporter = new OTLPTraceExporter({ url: otlpTraceUrl(endpoint) });
   }

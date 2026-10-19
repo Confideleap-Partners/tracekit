@@ -82,9 +82,7 @@ export function createLogger(options: LoggerOptions): Logger {
         ...contextToLogFields(context),
         ...bindings,
         msg: message,
-        ...(meta
-          ? { meta: toPlain(meta, includeStack) as Record<string, unknown> }
-          : {}),
+        ...(meta ? { meta: toPlain(meta, includeStack) as Record<string, unknown> } : {}),
       };
 
       let line: string;
