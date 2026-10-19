@@ -1,0 +1,34 @@
+# Node
+node_modules/
+dist/
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Rust
+target/
+**/*.rs.bk
+
+# Native build output
+*.node
+*.so
+*.dylib
+*.dll
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Test output
+test-results/
+playwright-report/
