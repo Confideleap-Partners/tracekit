@@ -218,7 +218,7 @@ errors. See `bench/RESULTS.md`.
 
 ## 9. Open items
 
-1. **npm org**: confirm `@confideleap` publish permissions and 2FA.
+1. **npm org**: the current npm token is invalid; run `npm login` and confirm `@confideleap` publish permissions and 2FA.
 2. **Faro ownership**: who owns the Faro receiver/Alloy configuration and the runtime env values.
 3. **Integration order**: central-backend + irm-backend + login first, or all services together.
-4. **Public history**: this repository will be rebuilt so the public history contains only the telemetry-only scope.
+4. **Public history**: the history is telemetry-only and includes the finalization commits. Push once the GitHub remote and npm access are ready.
