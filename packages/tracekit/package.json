@@ -5,11 +5,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/confideleap/tracekit.git"
+    "url": "https://github.com/Confideleap-Partners/tracekit.git"
   },
-  "homepage": "https://github.com/confideleap/tracekit",
+  "homepage": "https://github.com/Confideleap-Partners/tracekit",
   "bugs": {
-    "url": "https://github.com/confideleap/tracekit/issues"
+    "url": "https://github.com/Confideleap-Partners/tracekit/issues"
   },
   "keywords": [
     "telemetry",
