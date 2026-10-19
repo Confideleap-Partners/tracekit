@@ -111,6 +111,10 @@ Apps own all UI; expose `getLastReference()` in error messages.
 4. Async work logs the same `request_id` and `workflow_id`.
 5. In the package repo: `npm test`, `npm run test:native`, `npm run demo`.
 
+## Full API
+
+See [docs/API.md](docs/API.md) for every public export.
+
 ## Rules
 
 - Do: init once before imports; propagate with `tracedFetch`/`injectTraceHeaders`; keep IDs in logs and job payloads.
