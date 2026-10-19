@@ -1,6 +1,6 @@
 # TraceKit API Reference
 
-Complete reference for every public API exposed by `@confideleap/tracekit`.
+Complete reference for every public API exposed by `@confideleap-partners/tracekit`.
 
 - Node.js `>= 24`
 - Rust native core is primary; TypeScript fallback is secondary and warns once
@@ -10,17 +10,17 @@ Complete reference for every public API exposed by `@confideleap/tracekit`.
 
 | Import path | Contents |
 |---|---|
-| `@confideleap/tracekit` | Bootstrap, IDs, context, failure, fetch, logger, OTel, async, Express helpers, types |
-| `@confideleap/tracekit/express` | Express middleware + Express-specific types |
-| `@confideleap/tracekit/apollo` | Apollo Server plugin |
-| `@confideleap/tracekit/next` | Next.js helpers |
-| `@confideleap/tracekit/web` | Browser-safe entry: fetch capture + headless Faro |
-| `@confideleap/tracekit/bullmq` | Async/job context helpers |
-| `@confideleap/tracekit/testing` | Test helpers |
+| `@confideleap-partners/tracekit` | Bootstrap, IDs, context, failure, fetch, logger, OTel, async, Express helpers, types |
+| `@confideleap-partners/tracekit/express` | Express middleware + Express-specific types |
+| `@confideleap-partners/tracekit/apollo` | Apollo Server plugin |
+| `@confideleap-partners/tracekit/next` | Next.js helpers |
+| `@confideleap-partners/tracekit/web` | Browser-safe entry: fetch capture + headless Faro |
+| `@confideleap-partners/tracekit/bullmq` | Async/job context helpers |
+| `@confideleap-partners/tracekit/testing` | Test helpers |
 
 ---
 
-## 1. Types (`@confideleap/tracekit`)
+## 1. Types (`@confideleap-partners/tracekit`)
 
 ### `IdFormat`
 
@@ -217,7 +217,7 @@ The full `NativeApi` implemented in TypeScript. Useful for tests and diagnostics
 | `shouldSample(traceId, ratio)` | `boolean` | Deterministic trace-id sampling |
 | `redactJson(json, extraKeys?)` | `string \| null` | Key-based redaction + truncation |
 
-Native loading order: `native/tracekit.node` → `tracekit.<platform-tag>.node` → `@confideleap/tracekit-<platform-tag>`. `TRACEKIT_REQUIRE_NATIVE=true` throws when none load.
+Native loading order: `native/tracekit.node` → `tracekit.<platform-tag>.node` → `@confideleap-partners/tracekit-<platform-tag>`. `TRACEKIT_REQUIRE_NATIVE=true` throws when none load.
 
 ---
 
@@ -453,7 +453,7 @@ Serialize the full `tracekit` object into BullMQ job data, outbox rows, or webho
 
 ---
 
-## 11. Express (`@confideleap/tracekit/express`)
+## 11. Express (`@confideleap-partners/tracekit/express`)
 
 Also re-exported from the root: `requestContext`, `errorHandler`, `outgoingHeaders`, `httpLogger`.
 
@@ -504,7 +504,7 @@ Alias for `injectTraceHeaders` for use in Express services.
 
 ---
 
-## 12. Apollo (`@confideleap/tracekit/apollo`)
+## 12. Apollo (`@confideleap-partners/tracekit/apollo`)
 
 ### `tracekitApolloPlugin()`
 
@@ -518,7 +518,7 @@ Existing error extensions are preserved; response-level extensions are set when 
 
 ---
 
-## 13. Next.js (`@confideleap/tracekit/next`)
+## 13. Next.js (`@confideleap-partners/tracekit/next`)
 
 ### `contextFromNextHeaders(headers)`
 
@@ -538,7 +538,7 @@ Returns request headers with `x-request-id`, `traceparent`, `x-action-id`, `x-wo
 
 ---
 
-## 14. Browser / Faro (`@confideleap/tracekit/web`)
+## 14. Browser / Faro (`@confideleap-partners/tracekit/web`)
 
 Browser-safe: no Node built-ins. Apps own all UI.
 
@@ -620,7 +620,7 @@ Resets module state.
 
 ---
 
-## 15. Testing (`@confideleap/tracekit/testing`)
+## 15. Testing (`@confideleap-partners/tracekit/testing`)
 
 ### `createMemoryLogger(options)`
 

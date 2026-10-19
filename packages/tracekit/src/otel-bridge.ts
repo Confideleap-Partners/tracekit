@@ -70,7 +70,7 @@ export function withSpan<T>(
   attributes: Record<string, string | number | boolean> = {},
 ): T {
   if (!otelApi) return fn(null);
-  const tracer = otelApi.trace.getTracer('@confideleap/tracekit');
+  const tracer = otelApi.trace.getTracer('@confideleap-partners/tracekit');
   return tracer.startActiveSpan(name, (span: any) => {
     try {
       for (const [key, value] of Object.entries(attributes)) {

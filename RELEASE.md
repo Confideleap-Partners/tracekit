@@ -2,14 +2,14 @@
 
 ## Versioning
 
-- `@confideleap/tracekit` follows semantic versioning.
+- `@confideleap-partners/tracekit` follows semantic versioning.
 - The first public release is `0.1.0`, published under the `next` dist-tag.
 - Promote to `1.0.0` after service integration, benchmarks, and UAT.
 - Keep the npm version and the Cargo workspace version in sync.
 
 ## Preflight checklist
 
-- [ ] `npm login` and confirm membership in the `@confideleap` npm org.
+- [ ] `npm login` and confirm membership in the `@confideleap-partners` npm org.
 - [ ] CI green on Node 24 and Alpine.
 - [ ] `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`.
 - [ ] `npm test`, `npm run test:native`, `npm run test:coverage`.
@@ -27,7 +27,7 @@ Platform native packages are built in CI with `napi-rs` for linux gnu/musl
 x64/arm64 and macOS. The release workflow:
 
 1. Builds `*.node` artifacts per target.
-2. Creates platform packages (`@confideleap/tracekit-<platform-tag>`).
+2. Creates platform packages (`@confideleap-partners/tracekit-<platform-tag>`).
 3. Publishes platform packages first.
 4. Publishes the main package with provenance and the `next` tag.
 

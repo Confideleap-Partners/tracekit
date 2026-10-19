@@ -54,8 +54,8 @@ npm run demo           # local two-service end-to-end demo
 ## Backend usage
 
 ```ts
-import { initTraceKit, createLogger } from '@confideleap/tracekit';
-import { requestContext, httpLogger, errorHandler } from '@confideleap/tracekit/express';
+import { initTraceKit, createLogger } from '@confideleap-partners/tracekit';
+import { requestContext, httpLogger, errorHandler } from '@confideleap-partners/tracekit/express';
 
 // Single bootstrap point: configures IDs and starts OTel.
 await initTraceKit({
@@ -75,7 +75,7 @@ app.use(errorHandler({ service: 'irm-backend', logger }));
 ## Async usage
 
 ```ts
-import { captureJobContext, runWithJobContext } from '@confideleap/tracekit/bullmq';
+import { captureJobContext, runWithJobContext } from '@confideleap-partners/tracekit/bullmq';
 
 await queue.add('reconcile', captureJobContext({ tenantId }));
 // worker
@@ -87,7 +87,7 @@ await runWithJobContext(job.data, async () => {
 ## Frontend usage
 
 ```ts
-import { initFaro, initWebTracking, getLastReference } from '@confideleap/tracekit/web';
+import { initFaro, initWebTracking, getLastReference } from '@confideleap-partners/tracekit/web';
 import { initializeFaro } from '@grafana/faro-web-sdk';
 import { TracingInstrumentation } from '@grafana/faro-web-tracing';
 
@@ -110,13 +110,13 @@ const reference = getLastReference();
 
 ## Package subpaths
 
-- `@confideleap/tracekit` — context, fetch, logger, OTel, async
-- `@confideleap/tracekit/express`
-- `@confideleap/tracekit/apollo`
-- `@confideleap/tracekit/next`
-- `@confideleap/tracekit/web` — browser-safe entry + headless Faro
-- `@confideleap/tracekit/bullmq`
-- `@confideleap/tracekit/testing`
+- `@confideleap-partners/tracekit` — context, fetch, logger, OTel, async
+- `@confideleap-partners/tracekit/express`
+- `@confideleap-partners/tracekit/apollo`
+- `@confideleap-partners/tracekit/next`
+- `@confideleap-partners/tracekit/web` — browser-safe entry + headless Faro
+- `@confideleap-partners/tracekit/bullmq`
+- `@confideleap-partners/tracekit/testing`
 
 ## Benchmarks
 

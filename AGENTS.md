@@ -3,7 +3,7 @@
 Telemetry-only SDK. Node `>=24`. Rust native core is primary; TS fallback is secondary and warns.
 
 ```
-npm i @confideleap/tracekit
+npm i @confideleap-partners/tracekit
 ```
 
 IDs: request `cp_<ULID>` (switch `cp_<UUIDv7>`), action `act_*`, job `job_*`, workflow `workflow_*`.
@@ -15,7 +15,7 @@ Call bootstrap **before importing express or instrumented libs**:
 
 ```ts
 // telemetry.ts — import this first in server.ts
-import { initTraceKit } from '@confideleap/tracekit';
+import { initTraceKit } from '@confideleap-partners/tracekit';
 
 await initTraceKit({
   service: 'irm-backend',
@@ -27,8 +27,8 @@ await initTraceKit({
 ```
 
 ```ts
-import { createLogger } from '@confideleap/tracekit';
-import { requestContext, httpLogger, errorHandler } from '@confideleap/tracekit/express';
+import { createLogger } from '@confideleap-partners/tracekit';
+import { requestContext, httpLogger, errorHandler } from '@confideleap-partners/tracekit/express';
 
 const logger = createLogger({ service: 'irm-backend' });
 app.use(requestContext());          // before rate limiters/routes
@@ -42,18 +42,18 @@ CORS: expose `X-Request-Id`, `X-Trace-Id`, `X-Action-Id`, `X-Workflow-Id`, `X-Fa
 Downstream calls and auth context:
 
 ```ts
-import { tracedFetch, injectTraceHeaders, getResponseFailure } from '@confideleap/tracekit';
+import { tracedFetch, injectTraceHeaders, getResponseFailure } from '@confideleap-partners/tracekit';
 
 const res = await tracedFetch(`${AUTH_URL}/api/auth/authorize`, { method: 'POST', headers: injectTraceHeaders({ cookie }), body });
 const failure = getResponseFailure(res); // { stage, service, operation, status }
 ```
 
-After auth, enrich logs: `updateContext({ tenantId, userId })` from `@confideleap/tracekit`.
+After auth, enrich logs: `updateContext({ tenantId, userId })` from `@confideleap-partners/tracekit`.
 
 ## Async (BullMQ / outbox / crons)
 
 ```ts
-import { captureJobContext, runWithJobContext, createJobContext } from '@confideleap/tracekit/bullmq';
+import { captureJobContext, runWithJobContext, createJobContext } from '@confideleap-partners/tracekit/bullmq';
 
 await queue.add('reconcile', captureJobContext({ tenantId }));   // producer
 await runWithJobContext(job.data, async () => { /* consumer */ });
@@ -65,7 +65,7 @@ Persist `tracekit` context in outbox rows / job data; never drop it on retry.
 ## GraphQL (Apollo)
 
 ```ts
-import { tracekitApolloPlugin } from '@confideleap/tracekit/apollo';
+import { tracekitApolloPlugin } from '@confideleap-partners/tracekit/apollo';
 new ApolloServer({ plugins: [tracekitApolloPlugin()] });
 ```
 
@@ -75,19 +75,19 @@ new ApolloServer({ plugins: [tracekitApolloPlugin()] });
 // instrumentation.ts
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    const { initTraceKit } = await import('@confideleap/tracekit');
+    const { initTraceKit } = await import('@confideleap-partners/tracekit');
     await initTraceKit({ service: 'login', otlpEndpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT });
   }
 }
 ```
 
-Route handlers: `withNextRequestContext(request.headers, async (ctx) => ...)`; proxy/forward: `forwardedRequestHeaders(headers)` from `@confideleap/tracekit/next`.
+Route handlers: `withNextRequestContext(request.headers, async (ctx) => ...)`; proxy/forward: `forwardedRequestHeaders(headers)` from `@confideleap-partners/tracekit/next`.
 Next standalone: add native package to `serverExternalPackages` (fallback still works).
 
 ## Frontend (browser, no UI)
 
 ```ts
-import { initFaro, initWebTracking, getLastReference, recordWebReference } from '@confideleap/tracekit/web';
+import { initFaro, initWebTracking, getLastReference, recordWebReference } from '@confideleap-partners/tracekit/web';
 import { initializeFaro } from '@grafana/faro-web-sdk';
 import { TracingInstrumentation } from '@grafana/faro-web-tracing';
 

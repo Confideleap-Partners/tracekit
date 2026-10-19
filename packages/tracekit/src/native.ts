@@ -5,7 +5,7 @@
  *
  * 1. `native/tracekit.node` — local build (`npm run build:native`)
  * 2. `tracekit.<platform-tag>.node` — napi-rs CLI output
- * 3. `@confideleap/tracekit-<platform-tag>` — published platform package
+ * 3. `@confideleap-partners/tracekit-<platform-tag>` — published platform package
  *
  * The TypeScript fallback exists for unsupported platforms and emergency
  * rollback. It is never silent: a warning is emitted once, and
@@ -113,7 +113,7 @@ function nativeCandidates(): string[] {
   const tag = platformTag();
   if (tag) {
     candidates.push(`../tracekit.${tag}.node`);
-    candidates.push(`@confideleap/tracekit-${tag}`);
+    candidates.push(`@confideleap-partners/tracekit-${tag}`);
   }
   return candidates;
 }

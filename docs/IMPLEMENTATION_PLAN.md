@@ -25,7 +25,7 @@ It is telemetry-only. It is not a request registry, UI, helpdesk integration, or
 
 | Item | Decision |
 |---|---|
-| npm package | `@confideleap/tracekit`, public npm |
+| npm package | `@confideleap-partners/tracekit`, public npm |
 | Default request ID | `cp_<ULID>` |
 | Alternate request ID | `cp_<UUIDv7>` |
 | Action ID | `act_<ULID>` / `act_<UUIDv7>` |

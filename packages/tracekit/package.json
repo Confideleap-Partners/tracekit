@@ -1,5 +1,5 @@
 {
-  "name": "@confideleap/tracekit",
+  "name": "@confideleap-partners/tracekit",
   "version": "0.1.0",
   "description": "End-to-end telemetry SDK for Confideleap: request, action, job, and workflow IDs, W3C trace context, structured logs, failure stages, async propagation, and headless Faro integration",
   "license": "MIT",

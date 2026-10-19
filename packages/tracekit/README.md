@@ -1,4 +1,4 @@
-# @confideleap/tracekit
+# @confideleap-partners/tracekit
 
 End-to-end telemetry for backend services and frontends: request, action, job, and workflow IDs, W3C trace context, structured logs, failure stages, async propagation, and headless Faro integration.
 
@@ -13,7 +13,7 @@ End-to-end telemetry for backend services and frontends: request, action, job, a
 ## Install
 
 ```bash
-npm install @confideleap/tracekit
+npm install @confideleap-partners/tracekit
 ```
 
 Optional peers when using OpenTelemetry export:
@@ -27,8 +27,8 @@ Optional peers when using browser RUM: install `@grafana/faro-web-sdk` and `@gra
 ## Backend
 
 ```ts
-import { initTraceKit, createLogger } from '@confideleap/tracekit';
-import { requestContext, httpLogger, errorHandler } from '@confideleap/tracekit/express';
+import { initTraceKit, createLogger } from '@confideleap-partners/tracekit';
+import { requestContext, httpLogger, errorHandler } from '@confideleap-partners/tracekit/express';
 
 await initTraceKit({
   service: 'irm-backend',
@@ -45,7 +45,7 @@ app.use(errorHandler({ service: 'irm-backend', logger }));
 ## Frontend
 
 ```ts
-import { initFaro, initWebTracking, getLastReference } from '@confideleap/tracekit/web';
+import { initFaro, initWebTracking, getLastReference } from '@confideleap-partners/tracekit/web';
 import { initializeFaro } from '@grafana/faro-web-sdk';
 import { TracingInstrumentation } from '@grafana/faro-web-tracing';
 
