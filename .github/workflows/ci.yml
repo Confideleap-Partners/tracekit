@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  rust:
+    name: Rust core
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+
+  node:
+    name: Node 24
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: packages/tracekit/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install
+        working-directory: packages/tracekit
+        run: npm ci
+      - name: Build native core
+        working-directory: packages/tracekit
+        run: npm run build:native
+      - name: Type check and unit tests
+        working-directory: packages/tracekit
+        run: npm test
+      - name: Native primary test
+        working-directory: packages/tracekit
+        run: npm run test:native
+      - name: Coverage
+        working-directory: packages/tracekit
+        run: npm run test:coverage
+      - name: Browser bundle check
+        working-directory: packages/tracekit
+        run: npm run check:browser
+      - name: Pack smoke test
+        working-directory: packages/tracekit
+        run: npm run verify:pack
+
+  alpine:
+    name: Alpine fallback
+    runs-on: ubuntu-latest
+    container: node:24-alpine
+    steps:
+      - uses: actions/checkout@v4
+      - run: apk add --no-cache bash
+      - name: Install
+        working-directory: packages/tracekit
+        run: npm ci --omit=optional
+      - name: Build TypeScript
+        working-directory: packages/tracekit
+        run: npm run build:ts
+      - name: Tests on TypeScript fallback
+        working-directory: packages/tracekit
+        run: npm run build:test && node --test dist-test/test/*.test.js
