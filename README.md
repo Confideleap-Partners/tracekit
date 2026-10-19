@@ -4,7 +4,14 @@ End-to-end telemetry for Confideleap's backend services and frontends: request, 
 
 Built on OpenTelemetry, Grafana LGTM, Alloy, and Grafana Faro.
 
-> Status: telemetry-only core implemented and tested. No UI, no helpdesk, no request registry.
+> Status: telemetry-only core implemented, benchmarked, and release-ready. No UI, no helpdesk, no request registry.
+
+## Requirements
+
+- Node.js **>= 24**
+- The Rust native addon is the **primary** implementation. The TypeScript fallback
+exists for unsupported platforms and emergency rollback; it is never silent.
+  Set `TRACEKIT_REQUIRE_NATIVE=true` to fail fast when the native binding is missing.
 
 ## Identifiers
 
@@ -111,9 +118,19 @@ const reference = getLastReference();
 - `@confideleap/tracekit/bullmq`
 - `@confideleap/tracekit/testing`
 
+## Benchmarks
+
+Measured on Node 24 (Intel i5-10210U, 8 threads): native ID generation at
+~3.15M request IDs/s, single-process HTTP capacity at ~5,100 RPS with context +
+logging (conservative, in-process load generator), and the 2.8k RPS
+one-hour-replay target sustained with zero errors.
+
+See [bench/RESULTS.md](packages/tracekit/bench/RESULTS.md).
+
 ## Documentation
 
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
+- [Release guide](RELEASE.md)
 
 ## Non-goals
 

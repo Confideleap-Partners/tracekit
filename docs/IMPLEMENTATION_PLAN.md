@@ -1,7 +1,7 @@
 # TraceKit Implementation Plan
 
 Last updated: 2026-10-19
-Status: telemetry-only core implemented; production rollout pending
+Status: telemetry-only core implemented, benchmarked, and release-ready; service integration pending
 Owner: Platform / Observability
 
 ---
@@ -163,6 +163,7 @@ The browser entry must not import Node built-ins. CI bundles it and fails if it 
 | `OTEL_RESOURCE_ATTRIBUTES` | Node/Next | namespace, environment, version |
 | `TELEMETRY_SAMPLE_RATIO` | Node/Next | Trace sampling |
 | `TELEMETRY_RETENTION_DAYS=28` | services/dashboards | Retention contract |
+| `TRACEKIT_REQUIRE_NATIVE` | Node services | `true` fails fast when the native binding is unavailable |
 | `FARO_COLLECTOR_URL` | frontends (runtime) | Faro receiver URL, injected by the app |
 | `FARO_APP_NAME` | frontends (runtime) | App identity |
 | `GRAFANA_REQUEST_LOOKUP_URL` | docs/tickets | Optional deep link |
@@ -174,6 +175,10 @@ Tempo/Loki/Mimir sizing is deployment configuration, not a runtime env var.
 ## 7. Production roadmap
 
 ### P0 — release blockers
+
+Benchmarked on Node 24: native ID generation ~3.15M request IDs/s, single-process
+HTTP capacity ~5,100 RPS with context + logging, 2.8k RPS replay target with zero
+errors. See `bench/RESULTS.md`.
 
 1. **Native distribution**: napi-rs prebuilds as platform packages for linux gnu/musl x64/arm64 and macOS, optionalDependencies, loader resolution, JS fallback.
 2. **Browser distribution**: dual CJS/ESM build, `browser` export condition, no Node built-ins, bundle-size budget.
