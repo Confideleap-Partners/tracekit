@@ -42,9 +42,9 @@ CORS: expose `X-Request-Id`, `X-Trace-Id`, `X-Action-Id`, `X-Workflow-Id`, `X-Fa
 Downstream calls and auth context:
 
 ```ts
-import { tracedFetch, injectTraceHeaders } from '@confideleap/tracekit';
+import { tracedFetch, injectTraceHeaders, getResponseFailure } from '@confideleap/tracekit';
 
-await tracedFetch(`${AUTH_URL}/api/auth/authorize`, { method: 'POST', headers: injectTraceHeaders({ cookie }), body });
+const res = await tracedFetch(`${AUTH_URL}/api/auth/authorize`, { method: 'POST', headers: injectTraceHeaders({ cookie }), body });
 const failure = getResponseFailure(res); // { stage, service, operation, status }
 ```
 
