@@ -129,6 +129,7 @@ See [bench/RESULTS.md](packages/tracekit/bench/RESULTS.md).
 
 ## Documentation
 
+- [Agent integration guide](AGENTS.md)
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
 - [Release guide](RELEASE.md)
 
