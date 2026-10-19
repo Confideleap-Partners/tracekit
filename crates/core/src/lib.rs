@@ -331,7 +331,10 @@ pub fn new_span_id_hex() -> String {
 }
 
 fn is_lower_hex(value: &str, len: usize) -> bool {
-    value.len() == len && value.bytes().all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
+    value.len() == len
+        && value
+            .bytes()
+            .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
 }
 
 fn is_zero_hex(value: &str) -> bool {
@@ -367,7 +370,10 @@ pub fn parse_traceparent(value: &str) -> Option<TraceParent> {
     if version.len() != 2 || version == "ff" {
         return None;
     }
-    if !version.bytes().all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase()) {
+    if !version
+        .bytes()
+        .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
+    {
         return None;
     }
     if version == "00" && value.len() != 55 {
@@ -379,7 +385,11 @@ pub fn parse_traceparent(value: &str) -> Option<TraceParent> {
     if !is_lower_hex(span_id, 16) || is_zero_hex(span_id) {
         return None;
     }
-    if flags.len() != 2 || !flags.bytes().all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase()) {
+    if flags.len() != 2
+        || !flags
+            .bytes()
+            .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
+    {
         return None;
     }
     let flags = u8::from_str_radix(flags, 16).ok()?;
@@ -456,7 +466,24 @@ pub fn sanitize_header_value(value: &str) -> Option<String> {
 // ---------------------------------------------------------------------------
 
 fn is_token_char(ch: char) -> bool {
-    ch.is_ascii_alphanumeric() || matches!(ch, '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | '-' | '.' | '^' | '_' | '`' | '|' | '~')
+    ch.is_ascii_alphanumeric()
+        || matches!(
+            ch,
+            '!' | '#'
+                | '$'
+                | '%'
+                | '&'
+                | '\''
+                | '*'
+                | '+'
+                | '-'
+                | '.'
+                | '^'
+                | '_'
+                | '`'
+                | '|'
+                | '~'
+        )
 }
 
 fn percent_decode(value: &str) -> String {
@@ -574,7 +601,9 @@ fn is_sensitive_key(key: &str, extra: &[String]) -> bool {
     {
         return true;
     }
-    extra.iter().any(|candidate| lower == candidate.to_ascii_lowercase())
+    extra
+        .iter()
+        .any(|candidate| lower == candidate.to_ascii_lowercase())
 }
 
 fn redact_value(value: &Value, extra: &[String]) -> Value {
@@ -590,7 +619,9 @@ fn redact_value(value: &Value, extra: &[String]) -> Value {
             }
             Value::Object(out)
         }
-        Value::Array(items) => Value::Array(items.iter().map(|item| redact_value(item, extra)).collect()),
+        Value::Array(items) => {
+            Value::Array(items.iter().map(|item| redact_value(item, extra)).collect())
+        }
         Value::String(text) if text.len() > MAX_STRING_BYTES => {
             let mut truncated = text.chars().take(MAX_STRING_BYTES).collect::<String>();
             truncated.push_str("...[truncated]");
@@ -730,10 +761,19 @@ mod tests {
     #[test]
     fn traceparent_rejects_bad_values() {
         assert!(parse_traceparent("").is_none());
-        assert!(parse_traceparent("00-00000000000000000000000000000000-0000000000000000-01").is_none());
-        assert!(parse_traceparent("ff-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01").is_none());
-        assert!(parse_traceparent("00-4BF92F3577B34DA6A3CE929D0E0E4736-00f067aa0ba902b7-01").is_none());
-        assert!(parse_traceparent("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-extra").is_none());
+        assert!(
+            parse_traceparent("00-00000000000000000000000000000000-0000000000000000-01").is_none()
+        );
+        assert!(
+            parse_traceparent("ff-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01").is_none()
+        );
+        assert!(
+            parse_traceparent("00-4BF92F3577B34DA6A3CE929D0E0E4736-00f067aa0ba902b7-01").is_none()
+        );
+        assert!(
+            parse_traceparent("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-extra")
+                .is_none()
+        );
     }
 
     #[test]
@@ -776,9 +816,6 @@ mod tests {
         let trace_id = new_trace_id_hex();
         assert!(should_sample(&trace_id, 1.0));
         assert!(!should_sample(&trace_id, 0.0));
-        assert_eq!(
-            should_sample(&trace_id, 0.5),
-            should_sample(&trace_id, 0.5)
-        );
+        assert_eq!(should_sample(&trace_id, 0.5), should_sample(&trace_id, 0.5));
     }
 }
