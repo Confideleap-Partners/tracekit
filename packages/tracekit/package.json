@@ -25,18 +25,44 @@
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "engines": {
-    "node": ">=20"
+    "node": ">=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist",
     "native",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
+  "napi": {
+    "binaryName": "tracekit",
+    "targets": [
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-linux-musl",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-unknown-linux-musl",
+      "x86_64-apple-darwin",
+      "aarch64-apple-darwin"
+    ]
+  },
   "scripts": {
     "build:native": "bash ../../scripts/build-native.sh",
+    "build:native:platform": "napi build --platform --release",
     "build:ts": "rm -rf dist && tsc -p tsconfig.json",
     "build": "npm run build:ts",
-    "test": "npm run build:ts && node --test dist/test/*.test.js",
+    "build:test": "rm -rf dist-test && tsc -p tsconfig.test.json",
+    "test": "npm run build:ts && npm run build:test && node --test dist-test/test/*.test.js",
+    "test:coverage": "npm run build:ts && npm run build:test && node --test --experimental-test-coverage dist-test/test/*.test.js",
+    "test:native": "npm run build:ts && npm run build:test && TRACEKIT_EXPECT_NATIVE=true node --test dist-test/test/native.test.js",
+    "bench:micro": "node bench/micro.mjs",
+    "bench:http": "node bench/http.mjs",
+    "bench": "npm run bench:micro && npm run bench:http",
+    "check:browser": "node scripts/check-browser-bundle.mjs",
+    "verify:pack": "npm pack --dry-run",
+    "format": "prettier --write \"src/**/*.ts\" \"bench/**/*.mjs\" \"examples/**/*.js\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"bench/**/*.mjs\" \"examples/**/*.js\"",
     "demo": "node examples/local-e2e.js",
     "clean": "rm -rf dist"
   },
@@ -80,14 +106,19 @@
     }
   },
   "devDependencies": {
+    "@napi-rs/cli": "^3.0.0",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.200.0",
     "@opentelemetry/resources": "^2.12.0",
     "@opentelemetry/sdk-node": "^0.200.0",
     "@opentelemetry/sdk-trace-base": "^2.12.0",
     "@types/express": "^5.0.6",
-    "@types/node": "^22.20.5",
+    "@types/node": "^24.0.0",
+    "autocannon": "^8.0.0",
+    "esbuild": "^0.25.0",
     "express": "^4.22.3",
+    "prettier": "^3.7.0",
+    "tinybench": "^4.0.0",
     "typescript": "^5.9.3"
   }
 }
