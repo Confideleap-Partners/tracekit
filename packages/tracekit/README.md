@@ -7,6 +7,8 @@ End-to-end telemetry for backend services and frontends: request, action, job, a
 - Action/job/workflow: `act_`, `job_`, `workflow_` with the same switchable body
 - Legacy `req_<ULID>` inbound IDs accepted
 - No UI, no helpdesk, no request registry
+- Node.js **>= 24**
+- Rust native addon is primary; TypeScript fallback is secondary and warns once
 
 ## Install
 
@@ -57,6 +59,12 @@ initFaro({
 
 initWebTracking({ app: 'irm-frontend' });
 ```
+
+## Performance
+
+Native ID generation: ~3.15M request IDs/s. Single-process HTTP capacity:
+~5,100 RPS with request context + logging (conservative in-process benchmark).
+See `bench/RESULTS.md`.
 
 ## License
 
