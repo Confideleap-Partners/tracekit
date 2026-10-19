@@ -1,0 +1,19 @@
+[package]
+name = "tracekit-node"
+description = "napi-rs bindings for TraceKit"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi = { version = "3", default-features = false, features = ["napi8", "serde-json"] }
+napi-derive = "3"
+serde_json = "1"
+tracekit-core = { path = "../core" }
+
+[build-dependencies]
+napi-build = "2"
