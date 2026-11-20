@@ -4,10 +4,14 @@ on:
   push:
     tags:
       - 'v*'
+  # Manual run: publish to GitHub Packages only. npm refuses a version that is already published there,
+  # so use this to put an existing version on GitHub, or to try a build from a branch.
+  workflow_dispatch:
 
 permissions:
   contents: write
   id-token: write
+  packages: write
 
 jobs:
   build-native:
@@ -52,6 +56,7 @@ jobs:
   publish:
     name: Publish to npm
     needs: build-native
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment: npm
     steps:
@@ -91,3 +96,42 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+
+  # Same artifacts, published to GitHub Packages (npm.pkg.github.com) for the apps that install the
+  # @confideleap-partners scope from GitHub (it can map to one registry only). Runs on tags too, so each
+  # release lands on both registries. GitHub's registry has no provenance attestation.
+  publish-github:
+    name: Publish to GitHub Packages
+    needs: build-native
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: https://npm.pkg.github.com
+          scope: '@confideleap-partners'
+          cache: npm
+          cache-dependency-path: packages/tracekit/package-lock.json
+      - name: Install
+        working-directory: packages/tracekit
+        run: npm ci
+      - name: Download native artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: packages/tracekit
+          pattern: native-*
+          merge-multiple: true
+      - name: Build TypeScript
+        working-directory: packages/tracekit
+        run: npm run build:ts
+      - name: Assemble platform packages
+        working-directory: packages/tracekit
+        run: npx napi create-npm-dirs && npx napi artifacts
+      - name: Publish platform packages and main package
+        working-directory: packages/tracekit
+        run: |
+          npx napi prepublish -t npm --skip-gh-release
+          npm publish --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
